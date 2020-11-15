@@ -1,14 +1,16 @@
 # factory_castle
 
-A new Flutter package project.
+An IoC container for Dart inspired by [Castle Windsor](https://github.com/castleproject/Windsor).
 
-## Getting Started
+Sample code involving component registration, dependency injection and service locator style resolution:
+```dart
+final container = FactoryContainer();
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+container.register(Component.For<ILogger>((c) => Logger('Demo')));
+container.register(Component.For((c) => DataRepository(c.resolve())));
+container.register(Component.For((c) => ListViewModel(c.resolve(), c.resolve())));
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+final viewModel = container.resolve<ListViewModel>();
+
+viewModel.update();
+```
