@@ -3,10 +3,13 @@ library factory_castle;
 import 'dart:collection';
 
 import 'package:factory_castle/exceptions.dart';
+import 'package:factory_castle/factory_installer.dart';
 
 typedef T Factory<T>(FactoryContainer c);
 
 class FactoryContainer {
+  void install(FactoryInstaller installer) => installer.install(this);
+
   void register<T>(Component<T> component) {
     var handler = _handlers[component._type];
 
