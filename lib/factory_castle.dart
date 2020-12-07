@@ -23,22 +23,25 @@ class FactoryContainer {
     handler.add(component);
   }
 
-  T resolve<T>({String name = ''}) {
-    final handler = _handlers[T];
+  dynamic resolveOfType(Type type, {String name}) {
+    final handler = _handlers[type];
 
     if (handler == null) {
-      throw HandlerNotFoundException('Handler not found for "${T.toString()}"');
+      if (_parent != null) {
+        return _parent.resolveOfType(type, name: name);
+      }
+      throw HandlerNotFoundException('Handler not found for "${type.toString()}"');
     }
     try {
-      return handler.get(name);
+      return handler.get(name, _parent);
     } catch (e) {
       if (e.toString().contains('Stack Overflow')) {
         if (name != null && name.isNotEmpty) {
           throw CyclicDependencyException(
-              'Stack Overflow exception occured which may be a sign of cyclic dependency. Exception occured while resolving component of type ${T.toString()} with name "$name"');
+              'Stack Overflow exception occured which may be a sign of cyclic dependency. Exception occured while resolving component of type ${type.toString()} with name "$name"');
         } else {
           throw CyclicDependencyException(
-              'Stack Overflow exception occured which may be a sign of cyclic dependency. Exception occured while resolving component of type ${T.toString()}');
+              'Stack Overflow exception occured which may be a sign of cyclic dependency. Exception occured while resolving component of type ${type.toString()}');
         }
       } else {
         rethrow;
@@ -46,6 +49,13 @@ class FactoryContainer {
     }
   }
 
+  T resolve<T>({String name = ''}) => resolveOfType(T, name: name);
+
+  void attachChildContainer(FactoryContainer container) {
+    container._parent = this;
+  }
+
+  FactoryContainer _parent;
   HashMap<Type, _ComponentHandler> _handlers = HashMap<Type, _ComponentHandler>();
 }
 
@@ -101,11 +111,14 @@ class _ComponentHandler<T> {
     }
   }
 
-  T get(String name) {
+  T get(String name, FactoryContainer parent) {
     if (name != null && name.isNotEmpty) {
       if (_componentsWithName.containsKey(name)) {
         return _obtainInstance(_componentsWithName[name]);
       } else {
+        if (parent != null) {
+          return parent.resolveOfType(type, name: name);
+        }
         throw ComponentNotFoundException('Could not resolve named component of type "$type" under name $name');
       }
     } else {
@@ -113,6 +126,8 @@ class _ComponentHandler<T> {
         return _obtainInstance(_componentsWithoutName.first);
       } else if (_componentsWithName.isNotEmpty) {
         return _obtainInstance(_componentsWithName.values.first);
+      } else if (parent != null) {
+        return parent.resolveOfType(type);
       } else {
         throw ComponentNotFoundException('Could not resolve component of type "$type"');
       }
