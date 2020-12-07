@@ -12,13 +12,13 @@ void main() {
       expect(container.resolve<int>(), 123);
     });
 
-    test('resolves first registered component', () {
+    test('resolves last registered component', () {
       final container = FactoryContainer();
 
       container.register(Component.For((c) => 123));
       container.register(Component.For((c) => 321));
 
-      expect(container.resolve<int>(), 123);
+      expect(container.resolve<int>(), 321);
     });
 
     test('resolves correct component by name', () {
@@ -36,7 +36,7 @@ void main() {
       container.register(Component.For((c) => 123)..named('test1'));
       container.register(Component.For((c) => 321)..named('test2'));
 
-      expect(container.resolve<int>(), 123);
+      expect(container.resolve<int>(), 321);
     });
 
     test('resolves by type that was used for registration', () {
@@ -53,7 +53,7 @@ void main() {
       container.register(Component.For<Object>((c) => 123)..named('test1'));
       container.register(Component.For<Object>((c) => 321)..named('test2'));
 
-      expect(container.resolve<Object>(), 123);
+      expect(container.resolve<Object>(), 321);
     });
 
     test('resolves components that need other components', () {

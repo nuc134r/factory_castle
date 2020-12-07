@@ -123,9 +123,9 @@ class _ComponentHandler<T> {
       }
     } else {
       if (_componentsWithoutName.isNotEmpty) {
-        return _obtainInstance(_componentsWithoutName.first);
+        return _obtainInstance(_componentsWithoutName.last);
       } else if (_componentsWithName.isNotEmpty) {
-        return _obtainInstance(_componentsWithName.values.first);
+        return _obtainInstance(_componentsWithName.values.last);
       } else if (parent != null) {
         return parent.resolveOfType(type);
       } else {
