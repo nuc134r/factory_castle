@@ -5,8 +5,10 @@ import 'dart:collection';
 import 'package:factory_castle/exceptions.dart';
 import 'package:factory_castle/factory_installer.dart';
 
+/// Factory method.
 typedef T Factory<T>(FactoryContainer c);
 
+/// IoC container.
 class FactoryContainer {
   void install(FactoryInstaller installer) => installer.install(this);
 
@@ -47,10 +49,18 @@ class FactoryContainer {
   HashMap<Type, _ComponentHandler> _handlers = HashMap<Type, _ComponentHandler>();
 }
 
-enum Lifestyle { Singleton, Transient }
+/// Component lifestyle.
+enum Lifestyle {
+  /// Same instance is returned on every [resolve] call.
+  /// Component is instantiated on first resolution.
+  Singleton,
 
+  /// New object is instantiated on every [resolve] call.
+  Transient,
+}
+
+/// Component holder with fluent API.
 class Component<T> {
-  /// test
   // ignore: non_constant_identifier_names
   static Component For<T>(Factory<T> factory) => Component._(factory, T);
 
