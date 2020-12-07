@@ -1,7 +1,7 @@
 name: factory_castle
 description: An IoC container for Dart inspired by Castle Windsor
 version: 1.0.0
-author: nuc134r
+repository: https://github.com/nuc134r/factory_castle
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
