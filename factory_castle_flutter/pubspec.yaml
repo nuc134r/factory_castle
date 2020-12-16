@@ -1,0 +1,17 @@
+name: factory_castle_flutter
+description: Convenience Flutter widgets for factory_castle
+version: 1.0.0
+repository: https://github.com/nuc134r/factory_castle_flutter
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  factory_castle: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
