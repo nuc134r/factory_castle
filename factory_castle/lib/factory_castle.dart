@@ -6,7 +6,7 @@ import 'package:factory_castle/exceptions.dart';
 import 'package:factory_castle/factory_installer.dart';
 
 /// Factory method.
-typedef T Factory<T>(FactoryContainer c);
+typedef Factory<T> = T Function(FactoryContainer c);
 
 /// IoC container.
 class FactoryContainer {
@@ -52,6 +52,9 @@ class FactoryContainer {
   T resolve<T>({String name = ''}) => resolveOfType(T, name: name);
 
   void attachChildContainer(FactoryContainer container) {
+    if (identical(this, container)) {
+      throw UnsupportedError('Cannot attach a container to itself as a child container');
+    }
     container._parent = this;
   }
 

@@ -37,5 +37,12 @@ void main() {
 
       expect(result, 123);
     });
+
+    test('Cannot attach same container as child', () {
+      expect(() {
+        final container = FactoryContainer();
+        container.attachChildContainer(container);
+      }, throwsUnsupportedError);
+    });
   });
 }
