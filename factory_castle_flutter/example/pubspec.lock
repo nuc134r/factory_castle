@@ -50,6 +50,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  factory_castle:
+    dependency: "direct main"
+    description:
+      name: factory_castle
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  factory_castle_flutter:
+    dependency: "direct main"
+    description:
+      path: ".."
+      relative: true
+    source: path
+    version: "1.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -151,3 +165,4 @@ packages:
     version: "2.1.0-nullsafety.3"
 sdks:
   dart: ">=2.10.0-110 <2.11.0"
+  flutter: ">=1.17.0"
