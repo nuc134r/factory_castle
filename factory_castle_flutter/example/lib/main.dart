@@ -6,6 +6,7 @@ import 'example_installer.dart';
 import 'home_page/home_page.dart';
 import 'ui_text_service.dart';
 
+/// IoC container is set up via installer before the app is run.
 void main() {
   final container = FactoryContainer()..install(ExampleInstaller());
   runApp(MyApp(container));
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
 
   final FactoryContainer _container;
 
+  /// App root is [FactoryContainerWidget] which makes [FactoryContainer] accessible down the widget tree
   @override
   Widget build(BuildContext context) => FactoryContainerWidget(
         container: _container,

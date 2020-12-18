@@ -141,8 +141,10 @@ class ViewModelBase extends ChangeNotifier {
   }
 
   /// Meant to be overriden to load data on first widget build.
+  /// This is called in [State.initState].
   void onInit() {}
 
-  /// Meant to be overriden to unsubscribe, close handles and free resources.
+  /// Meant to be overriden to unsubscribe from streams, close handles and free resources.
+  /// This is called in [State.dispose].
   void onDispose() {}
 }
