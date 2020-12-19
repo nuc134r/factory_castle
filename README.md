@@ -1,24 +1,59 @@
-# factory_castle
+An **IoC container** for Dart inspired by [Castle Windsor](https://github.com/castleproject/Windsor). 
+ 
+And a complete **MVVM** state management solution for Flutter.
 
-An IoC container for Dart inspired by [Castle Windsor](https://github.com/castleproject/Windsor).
+Table of contents:
+- [IoC and DI](#ioc-and-di)
+  - [Basics](#basics)
+  - [Lifestyles](#lifestyles)
+  - [Names](#names)
+  - [Component overrides](#component-overrides)
+  - [Container hierarchy](#container-hierarchy)
+- [Flutter state management and MVVM](#flutter-state-management-and-mvvm)
+  - [Root widget](#root-widget)
+  - [View](#view)
+  - [ViewModel](#viewmodel)
+  - [Tips and tricks](#tips-and-tricks)
+  - [Example](#example)
 
-Sample code involving component registration, dependency injection and service locator style resolution:
-```dart
-final container = FactoryContainer();
+# IoC and DI
+## Basics
 
-container.register(Component.For<ILogger>((c) => Logger('Demo')));
-container.register(Component.For((c) => DataRepository(c.resolve())));
-container.register(Component.For((c) => ListViewModel(c.resolve(), c.resolve())));
+As name suggests components are registered to container as factory deleagates. Reflection usage in Dart is not particularly legal (at least with Flutter). 
 
-final viewModel = container.resolve<ListViewModel>();
-
-viewModel.update();
-```
-
-As name suggests components are registered as factory deleagates since reflection usage in Dart isn't something you can do easily and in performant way. Each factory delegate recieves `FactoryContainer` as a parameter so that dependencies can be injected into constructor via `resolve()`. Dart is good at type inference so you don't need to explicitly specify dependency types. Types are taken from the called constructor parameters.
+Each factory delegate recieves `FactoryContainer` as a parameter so that dependencies can be injected into constructor via `resolve<>()`. Dart is good at type inference so you don't need to explicitly specify dependency types if they are the same as parameter types. Components are resolved lazily so the order of registration is not important.
 
 See the example:
 
 ```dart
+// Registration of a component for ListViewModel. On component creation two dependencies of types that correspond with constructor params will be also resolved from the container.
 container.register(Component.For((c) => ListViewModel(c.resolve(), c.resolve())));
 ```
+
+Sample code involving component registration, dependency injection and service locator style resolution:
+
+```dart
+// creating container is straighforward
+final container = FactoryContainer();
+
+// register a couple components that depend on each other
+container.register(Component.For<ILogger>((c) => Logger('Demo')));
+container.register(Component.For((c) => DataRepository(c.resolve())));
+container.register(Component.For((c) => ListViewModel(c.resolve(), c.resolve())));
+
+// get a component from the container
+final viewModel = container.resolve<ListViewModel>();
+
+// use it
+viewModel.update();
+```
+## Lifestyles
+## Names
+## Component overrides
+## Container hierarchy
+# Flutter state management and MVVM
+## Root widget
+## View
+## ViewModel
+## Tips and tricks
+## Example
