@@ -1,6 +1,6 @@
 name: factory_castle_flutter
-description: Convenience Flutter widgets for factory_castle
-version: 1.0.0
+description: A complete MVVM state management solution for Flutter based on factory_castle package.
+version: 1.0.1
 repository: https://github.com/nuc134r/factory_castle_flutter
 
 environment:
