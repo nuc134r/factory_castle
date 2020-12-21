@@ -1,4 +1,8 @@
-IoC container inspired by [Castle Windsor](https://github.com/castleproject/Windsor) + Flutter MVVM framework. Your whole app architecture in a single package you've been dreaming about.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/nuc134r/factory_castle/master/.github/logo.svg?sanitize=true" width="250px">
+</p>
+
+<h3 align="center">IoC container for Dart inspired by <a href="https://github.com/castleproject/Windsor">Castle Windsor</a> + Flutter MVVM framework. </h2>
 
 Table of contents:
 - [IoC and DI](#ioc-and-di)
