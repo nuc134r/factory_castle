@@ -4,10 +4,11 @@
 
 <h3 align="center">IoC container for Dart inspired by <a href="https://github.com/castleproject/Windsor">Castle Windsor</a> + Flutter MVVM framework. </h2>
 
-![Pub Version](https://img.shields.io/pub/v/factory_castle?label=pub.dev&labelColor=333940&logo=dart)
+![Pub Version](https://img.shields.io/pub/v/factory_castle?color=%23&label=factory_castle)
+![Pub Version](https://img.shields.io/pub/v/factory_castle_flutter?color=%23&label=factory_castle_flutter)
 
 - [IoC and DI](#ioc-and-di)
-  - [Set up](#set-up)
+  - [Setup](#set-up)
   - [Creating container](#creating-container)
   - [Component registration](#component-registration)
   - [Lifestyles](#lifestyles)
@@ -22,7 +23,7 @@
   - [Example](#example)
 
 # IoC and DI
-## Set up
+## Setup
 
 IoC/DI package is platform independent so can be used in both command line apps and Flutter. Just add it to your `pubspec.yaml`:
 
