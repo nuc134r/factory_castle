@@ -8,10 +8,10 @@ import 'ui_text_service.dart';
 class ExampleInstaller implements FactoryInstaller {
   @override
   void install(FactoryContainer container) {
-    container.register(Component.For<ThemeData>((c) => _buildTheme()));
-    container.register(Component.For<UiTextService>((c) => UiTextService()));
+    container.register<ThemeData>((c) => _buildTheme());
+    container.register<UiTextService>((c) => UiTextService());
     // Component type can be omitted if it is the same as the implementation. Dart is good at guessing it.
-    container.register(Component.For((c) => CounterService()));
+    container.register((c) => CounterService());
   }
 
   ThemeData _buildTheme() => ThemeData(
