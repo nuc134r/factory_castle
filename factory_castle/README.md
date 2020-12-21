@@ -37,9 +37,9 @@ final container = FactoryContainer();
 
 ## Component registration
 
-As name suggests components are registered into container as factory deleagates. You have to manually inject dependencies into constructor (luckily, Dart will help you). Reflection could be used to avoid manual injection but `dart:mirrors` is not available for Flutter. 
+As name suggests components are registered into container as factory deleagates. You have to manually inject dependencies into constructor (luckily, Dart will help you). 
 
-Reflection support for non-Flutter apps may be intorduced later via separate package.
+Reflection could be used to avoid manual injection but sadly `dart:mirrors` library is not available for Flutter. Reflection support for non-Flutter apps may be intorduced later via separate package.
 
 Let's register `MyService` which takes `Logger` and `Config` objects as parameters:
 ```dart
