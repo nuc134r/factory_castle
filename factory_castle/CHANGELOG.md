@@ -1,3 +1,6 @@
+## 2.0.1
+* Removed exact version from README not to confuse anyone
+ 
 ## 2.0.0
 * New shorter syntax for registration
 

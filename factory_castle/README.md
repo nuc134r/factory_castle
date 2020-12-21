@@ -26,7 +26,7 @@ IoC/DI package is platform independent so can be used in both command line apps 
 
 ```yaml
 dependencies:
-  factory_castle: ^1.0.0
+  factory_castle:
 ```
 
 ## Creating container
