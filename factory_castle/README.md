@@ -4,6 +4,8 @@
 
 <h3 align="center">IoC container for Dart inspired by <a href="https://github.com/castleproject/Windsor">Castle Windsor</a> + Flutter MVVM framework. </h2>
 
+![Pub Version](https://img.shields.io/pub/v/factory_castle?label=pub.dev&labelColor=333940&logo=dart)
+
 - [IoC and DI](#ioc-and-di)
   - [Set up](#set-up)
   - [Creating container](#creating-container)
