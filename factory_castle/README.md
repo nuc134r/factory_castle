@@ -46,13 +46,15 @@ Reflection could be used to avoid manual injection but sadly `dart:mirrors` libr
 
 Let's register `MyService` which takes `Logger` and `Config` objects as parameters:
 ```dart
-container.register(Component.For<MyService>((c) => MyService(c.resolve<Logger>(), c.resolve<Config>())));
+container.register<MyService>((c) => MyService(c.res<Logger>(), c.res<Config>()));
 ```
 
-Dart is good at type inference so you don't need to explicitly specify dependency types if they are the same as parameter types. You can also omit type in `Component.For<>`:
+Dart is good at type inference so you don't need to explicitly specify dependency types if they are the same as parameter types. You can also omit registered component type if you don't want to abstract it with any interface.
+
+Next example does exactly the same as previous one:
 
 ```dart
-container.register(Component.For((c) => MyService(c.resolve(), c.resolve())));
+container.register((c) => MyService(c.res(), c.res()));
 ```
 
 Each factory delegate recieves current `FactoryContainer` instance as a parameter so that dependencies can be injected into constructor via `resolve<>()` method. 
@@ -60,9 +62,9 @@ Each factory delegate recieves current `FactoryContainer` instance as a paramete
 Components are resolved lazily so the order of registration is not important. See the full example:
 
 ```dart
-container.register(Component.For((c) => MyService(c.resolve(), c.resolve())));
-container.register(Component.For((c) => Logger()));
-container.register(Component.For((c) => Config(String.fromEnvironment('Flavor'))));
+container.register((c) => MyService(c.res(), c.res()));
+container.register((c) => Logger());
+container.register((c) => Config(String.fromEnvironment('Flavor')));
 ```
 
 ## Lifestyles
