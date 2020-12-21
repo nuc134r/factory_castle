@@ -8,7 +8,7 @@
 ![Pub Version](https://img.shields.io/pub/v/factory_castle_flutter?color=%23&label=factory_castle_flutter)
 
 - [IoC and DI](#ioc-and-di)
-  - [Setup](#set-up)
+  - [Setup](#setup)
   - [Creating container](#creating-container)
   - [Component registration](#component-registration)
   - [Lifestyles](#lifestyles)
