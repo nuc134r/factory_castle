@@ -25,7 +25,9 @@
 # IoC and DI
 ## Setup
 
-IoC/DI package is platform independent so can be used in both command line apps and Flutter. Just add it to your `pubspec.yaml`:
+IoC/DI package is platform independent so can be used in both command line apps and Flutter.
+
+Just add it to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
