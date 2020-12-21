@@ -1,6 +1,4 @@
-An **IoC container** for Dart inspired by [Castle Windsor](https://github.com/castleproject/Windsor). 
- 
-And a complete **MVVM** state management solution for Flutter.
+IoC container inspired by [Castle Windsor](https://github.com/castleproject/Windsor) + Flutter MVVM framework. Your whole app architecture in a single package you've been dreaming about.
 
 Table of contents:
 - [IoC and DI](#ioc-and-di)
@@ -26,7 +24,9 @@ Each factory delegate recieves `FactoryContainer` as a parameter so that depende
 See the example:
 
 ```dart
-// Registration of a component for ListViewModel. On component creation two dependencies of types that correspond with constructor params will be also resolved from the container.
+// Registration of a component for ListViewModel. 
+// When component is being created two dependencies of types that correspond with 
+// constructor params will be also resolved from the container.
 container.register(Component.For((c) => ListViewModel(c.resolve(), c.resolve())));
 ```
 
