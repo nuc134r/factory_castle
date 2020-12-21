@@ -4,9 +4,10 @@
 
 <h3 align="center">IoC container for Dart inspired by <a href="https://github.com/castleproject/Windsor">Castle Windsor</a> + Flutter MVVM framework. </h2>
 
-Table of contents:
 - [IoC and DI](#ioc-and-di)
-  - [Basics](#basics)
+  - [Set up](#set-up)
+  - [Creating container](#creating-container)
+  - [Component registration](#component-registration)
   - [Lifestyles](#lifestyles)
   - [Names](#names)
   - [Component overrides](#component-overrides)
@@ -19,38 +20,48 @@ Table of contents:
   - [Example](#example)
 
 # IoC and DI
-## Basics
+## Set up
 
-As name suggests components are registered to container as factory deleagates. Reflection usage in Dart is not particularly legal (at least with Flutter). 
+IoC/DI package is platform independent so can be used in both command line apps and Flutter. Just add it to your `pubspec.yaml`:
 
-Each factory delegate recieves `FactoryContainer` as a parameter so that dependencies can be injected into constructor via `resolve<>()`. Dart is good at type inference so you don't need to explicitly specify dependency types if they are the same as parameter types. Components are resolved lazily so the order of registration is not important.
-
-See the example:
-
-```dart
-// Registration of a component for ListViewModel. 
-// When component is being created two dependencies of types that correspond with 
-// constructor params will be also resolved from the container.
-container.register(Component.For((c) => ListViewModel(c.resolve(), c.resolve())));
+```yaml
+dependencies:
+  factory_castle: ^1.0.0
 ```
 
-Sample code involving component registration, dependency injection and service locator style resolution:
+## Creating container
 
 ```dart
-// creating container is straighforward
-final container = FactoryContainer();
-
-// register a couple components that depend on each other
-container.register(Component.For<ILogger>((c) => Logger('Demo')));
-container.register(Component.For((c) => DataRepository(c.resolve())));
-container.register(Component.For((c) => ListViewModel(c.resolve(), c.resolve())));
-
-// get a component from the container
-final viewModel = container.resolve<ListViewModel>();
-
-// use it
-viewModel.update();
+final container = FactoryContainer(); 
 ```
+
+## Component registration
+
+As name suggests components are registered into container as factory deleagates. You have to manually inject dependencies into constructor (luckily, Dart will help you). Reflection could be used to avoid manual injection but `dart:mirrors` is not available for Flutter. 
+
+Reflection support for non-Flutter apps may be intorduced later via separate package.
+
+Let's register `MyService` which takes `Logger` and `Config` objects as parameters:
+```dart
+container.register(Component.For<MyService>((c) => MyService(c.resolve<Logger>(), c.resolve<Config>())));
+```
+
+Dart is good at type inference so you don't need to explicitly specify dependency types if they are the same as parameter types. You can also omit type in `Component.For<>`:
+
+```dart
+container.register(Component.For((c) => MyService(c.resolve(), c.resolve())));
+```
+
+Each factory delegate recieves current `FactoryContainer` instance as a parameter so that dependencies can be injected into constructor via `resolve<>()` method. 
+
+Components are resolved lazily so the order of registration is not important. See the full example:
+
+```dart
+container.register(Component.For((c) => MyService(c.resolve(), c.resolve())));
+container.register(Component.For((c) => Logger()));
+container.register(Component.For((c) => Config(String.fromEnvironment('Flavor'))));
+```
+
 ## Lifestyles
 ## Names
 ## Component overrides
