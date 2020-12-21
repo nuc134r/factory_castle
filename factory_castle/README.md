@@ -37,6 +37,8 @@ dependencies:
 ## Creating container
 
 ```dart
+import 'package:factory_castle/factory_castle.dart';
+
 final container = FactoryContainer(); 
 ```
 
