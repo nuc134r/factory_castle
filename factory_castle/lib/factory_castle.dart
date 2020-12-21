@@ -5,14 +5,19 @@ import 'dart:collection';
 import 'package:factory_castle/exceptions.dart';
 import 'package:factory_castle/factory_installer.dart';
 
-/// Factory method.
-typedef Factory<T> = T Function(FactoryContainer c);
+/// Factory delegate.
+typedef FactoryDelegate<T> = T Function(FactoryContainerShort c);
 
 /// IoC container.
 class FactoryContainer {
+  /// Install an installer into this container.
   void install(FactoryInstaller installer) => installer.install(this);
 
-  void register<T>(Component<T> component) {
+  /// Register a component of specified type using factory delegate.
+  void register<T>(FactoryDelegate<T> factory, {String name = '', Lifestyle lifestyle = Lifestyle.Singleton}) {
+    final component = Component._(factory, T)
+      ..named(name)
+      ..lifestyle(lifestyle);
     var handler = _handlers[component._type];
 
     if (handler == null) {
@@ -23,6 +28,7 @@ class FactoryContainer {
     handler.add(component);
   }
 
+  /// Resolve a dependency of a runtime obtained type.
   dynamic resolveOfType(Type type, {String name}) {
     final handler = _handlers[type];
 
@@ -49,8 +55,10 @@ class FactoryContainer {
     }
   }
 
+  /// Resolve component by type and name.
   T resolve<T>({String name = ''}) => resolveOfType(T, name: name);
 
+  /// Attach a child container to this container.
   void attachChildContainer(FactoryContainer container) {
     if (identical(this, container)) {
       throw UnsupportedError('Cannot attach a container to itself as a child container');
@@ -58,8 +66,23 @@ class FactoryContainer {
     container._parent = this;
   }
 
+  /// Shortened syntax version of [FactoryContainer] for convenience use in factory delegates.
+  FactoryContainerShort get short => _short ??= FactoryContainerShort(this);
+
   FactoryContainer _parent;
+  FactoryContainerShort _short;
   HashMap<Type, _ComponentHandler> _handlers = HashMap<Type, _ComponentHandler>();
+}
+
+/// Shortened syntax version of [FactoryContainer] for convenience use in factory delegates.
+class FactoryContainerShort {
+  FactoryContainerShort(this.container);
+
+  /// Resolve component by type and name.
+  T res<T>({String name = ''}) => container.resolve<T>(name: name);
+
+  /// Wrapped container.
+  final FactoryContainer container;
 }
 
 /// Component lifestyle.
@@ -74,16 +97,15 @@ enum Lifestyle {
 
 /// Component holder with fluent API.
 class Component<T> {
-  // ignore: non_constant_identifier_names
-  static Component For<T>(Factory<T> factory) => Component._(factory, T);
-
   Component._(this._factory, this._type);
 
+  /// Specify a name for this component.
   Component<T> named(String name) {
     this._name = name;
     return this;
   }
 
+  /// Specify a lifestyle for this component.
   Component<T> lifestyle(Lifestyle lifestyle) {
     this._lifestyle = lifestyle;
     return this;
@@ -94,7 +116,7 @@ class Component<T> {
   T _instance;
 
   final Type _type;
-  final Factory<T> _factory;
+  final FactoryDelegate<T> _factory;
 }
 
 class _ComponentHandler<T> {
@@ -139,10 +161,10 @@ class _ComponentHandler<T> {
 
   T _obtainInstance(Component<T> component) {
     if (component._lifestyle == Lifestyle.Singleton) {
-      return component._instance ??= component._factory(_container);
+      return component._instance ??= component._factory(_container.short);
     }
     if (component._lifestyle == Lifestyle.Transient) {
-      return component._factory(_container);
+      return component._factory(_container.short);
     }
     throw Exception('Unknown component lifestyle ${component._lifestyle}');
   }

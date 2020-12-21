@@ -8,10 +8,10 @@ void main() {
       final container = FactoryContainer();
       String exceptionText;
 
-      container.register(Component.For((c) => 123)..named('name1'));
+      container.register((c) => 123, name: 'name1');
 
       try {
-        container.register(Component.For((c) => 321)..named('name1'));
+        container.register((c) => 321, name: 'name1');
       } catch (e) {
         expect(e is ComponentRegistrationException, true);
         exceptionText = e.toString();
@@ -24,8 +24,8 @@ void main() {
     test('allows registering multiple unnamed components', () {
       final container = FactoryContainer();
 
-      container.register(Component.For((c) => 123));
-      container.register(Component.For((c) => 321));
+      container.register((c) => 123);
+      container.register((c) => 321);
     });
   });
 }

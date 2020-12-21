@@ -7,7 +7,7 @@ void main() {
       final parentContainer = FactoryContainer();
       final childContainer = FactoryContainer();
       parentContainer.attachChildContainer(childContainer);
-      parentContainer.register(Component.For((c) => 123));
+      parentContainer.register((c) => 123);
 
       final result = childContainer.resolve<int>();
 
@@ -18,8 +18,8 @@ void main() {
       final parentContainer = FactoryContainer();
       final childContainer = FactoryContainer();
       parentContainer.attachChildContainer(childContainer);
-      parentContainer.register(Component.For((c) => 123));
-      childContainer.register(Component.For((c) => 321));
+      parentContainer.register((c) => 123);
+      childContainer.register((c) => 321);
 
       final result = childContainer.resolve<int>();
 
@@ -30,8 +30,8 @@ void main() {
       final parentContainer = FactoryContainer();
       final childContainer = FactoryContainer();
       parentContainer.attachChildContainer(childContainer);
-      parentContainer.register(Component.For((c) => 123).named('test'));
-      childContainer.register(Component.For((c) => 321));
+      parentContainer.register((c) => 123, name: 'test');
+      childContainer.register((c) => 321);
 
       final result = childContainer.resolve<int>(name: 'test');
 

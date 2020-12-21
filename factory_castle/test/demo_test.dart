@@ -30,9 +30,9 @@ void main() {
   test('demo', () {
     final container = FactoryContainer();
 
-    container.register(Component.For<ILogger>((c) => Logger('Demo')));
-    container.register(Component.For((c) => DataRepository(c.resolve())));
-    container.register(Component.For((c) => ListViewModel(c.resolve(), c.resolve())));
+    container.register<ILogger>((c) => Logger('Demo'));
+    container.register((c) => DataRepository(c.res()));
+    container.register((c) => ListViewModel(c.res(), c.res()));
 
     final viewModel = container.resolve<ListViewModel>();
 
