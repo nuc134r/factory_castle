@@ -1,6 +1,6 @@
 name: factory_castle
 description: IoC container inspired by Castle Windsor + Flutter MVVM framework. Your whole app architecture in a single package you've been dreaming about.
-version: 1.0.1
+version: 2.0.0
 repository: https://github.com/nuc134r/factory_castle
 
 environment:
