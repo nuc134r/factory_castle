@@ -46,8 +46,8 @@ class View<TModel extends ChangeNotifier> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewmodel = model(context.getContainer().short);
-    return _ViewProxy(model: viewmodel, builder: builder);
+    final viewModel = model(context.getContainer().short);
+    return _ViewProxy(model: viewModel, builder: builder);
   }
 }
 
@@ -62,7 +62,7 @@ class _ViewProxy<TModel extends ChangeNotifier> extends StatefulWidget {
   final WidgetBuilder<TModel> builder;
 
   @override
-  _ViewState createState() => _ViewState<TModel>(model);
+  _ViewState createState() => model is INeedTickerProvider ? _TickerViewState<TModel>(model) : _ViewState<TModel>(model);
 }
 
 class _ViewState<TModel extends ChangeNotifier> extends State<_ViewProxy<TModel>> {
@@ -75,7 +75,7 @@ class _ViewState<TModel extends ChangeNotifier> extends State<_ViewProxy<TModel>
     _model?.addListener(_onModelChanged);
 
     if (_model is ViewModelBase) {
-      final model = _cast<ViewModelBase>(_model);
+      final model = _model as ViewModelBase;
       model.context = context;
       model.onInit();
     }
@@ -86,7 +86,7 @@ class _ViewState<TModel extends ChangeNotifier> extends State<_ViewProxy<TModel>
   void dispose() {
     _model?.removeListener(_onModelChanged);
     if (_model is ViewModelBase) {
-      final model = _cast<ViewModelBase>(_model);
+      final model = _model as ViewModelBase;
       model._disposed = true;
       model.onDispose();
     }
@@ -97,8 +97,16 @@ class _ViewState<TModel extends ChangeNotifier> extends State<_ViewProxy<TModel>
   Widget build(BuildContext context) => widget.builder(context, _model);
 
   void _onModelChanged() => setState(() {});
+}
 
-  T _cast<T>(dynamic obj) => obj as T;
+class _TickerViewState<TModel extends ChangeNotifier> extends _ViewState<TModel> with SingleTickerProviderStateMixin {
+  _TickerViewState(TModel model) : super(model);
+
+  @override
+  void initState() {
+    (widget.model as INeedTickerProvider)?.tickerProvider = this;
+    super.initState();
+  }
 }
 
 /// Base view model used for MVVM.
@@ -147,4 +155,10 @@ class ViewModelBase extends ChangeNotifier {
   /// Meant to be overriden to unsubscribe from streams, close handles and free resources.
   /// This is called in [State.dispose].
   void onDispose() {}
+}
+
+/// Mix this mixin into your view model to obtain [TickerProvider].
+mixin INeedTickerProvider on ViewModelBase {
+  @protected
+  TickerProvider tickerProvider;
 }

@@ -20,6 +20,8 @@ class IncrementButton extends StatelessWidget {
           child: model.isBusy ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)) : Icon(Icons.add),
 
           tooltip: context.resolve<UiTextService>().incrementButtonTooltip,
+
+          backgroundColor: model.colorAnimation.value,
         ),
       );
 }
