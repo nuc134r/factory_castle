@@ -1,0 +1,26 @@
+name: coverage
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image:  google/dart:latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Collect coverage
+        run: |
+          pub get
+          pub global activate test_coverage
+          pub global run test_coverage
+        working-directory: factory_castle
+      
+      - uses: codecov/codecov-action@v1.0.0	
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}	
+          file: factory_castle/coverage/lcov.info
