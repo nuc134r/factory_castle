@@ -30,7 +30,7 @@ class FactoryContainerWidget extends InheritedWidget {
   Widget build(BuildContext context) => child;
 }
 
-typedef ViewModelBuilder<TModel> = TModel Function(FactoryContainer c);
+typedef ViewModelBuilder<TModel> = TModel Function(FactoryContainerShort c);
 typedef WidgetBuilder<TModel> = Widget Function(BuildContext context, TModel model);
 
 /// Base widget for creating an MVVM view component.
@@ -46,7 +46,7 @@ class View<TModel extends ChangeNotifier> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewmodel = model(context.getContainer());
+    final viewmodel = model(context.getContainer().short);
     return _ViewProxy(model: viewmodel, builder: builder);
   }
 }

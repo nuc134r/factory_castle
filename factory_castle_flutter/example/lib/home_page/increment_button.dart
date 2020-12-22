@@ -12,7 +12,7 @@ import 'increment_button_model.dart';
 class IncrementButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => View<IncrementButtonModel>(
-        model: (c) => IncrementButtonModel(c.resolve()),
+        model: (c) => IncrementButtonModel(c.res()),
         builder: (context, model) => FloatingActionButton(
           // ViewModelBase.isBusy flag allows button to become inactive and show progress
           // indicator while it's action is being asyncroniously performed.

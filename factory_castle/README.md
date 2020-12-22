@@ -61,7 +61,7 @@ Next example does exactly the same as previous one:
 container.register((c) => MyService(c.res(), c.res()));
 ```
 
-Each factory delegate recieves current `FactoryContainer` instance as a parameter so that dependencies can be injected into constructor via `resolve<>()` method. 
+Each factory delegate recieves shorthand wrapper for current `FactoryContainer` instance as a parameter so that dependencies can be injected into constructor via `res<>()` method. 
 
 Components are resolved lazily so the order of registration is not important. See the full example:
 

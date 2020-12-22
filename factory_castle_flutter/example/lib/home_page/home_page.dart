@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
         // This is where ViewModel is created. [c] is a FactoryContainer, use it to inject dependencies.
         // If constructor parameter is already of type that you have registered in container then you don't have to
         // specify it. Dart infers types.
-        model: (c) => HomePageModel(c.resolve()),
+        model: (c) => HomePageModel(c.res()),
         builder: (context, model) {
           return Scaffold(
             appBar: AppBar(

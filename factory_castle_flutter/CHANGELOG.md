@@ -1,3 +1,6 @@
+## 2.0.1
+* Using shorthand container wrapper for view model builder
+
 ## 2.0.0
 * Update to factory_castle 2.0.0
 
