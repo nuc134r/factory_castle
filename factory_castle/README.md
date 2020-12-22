@@ -6,6 +6,7 @@
 
 [![Pub Version](https://img.shields.io/pub/v/factory_castle?color=%23&label=factory_castle)](https://pub.dev/packages/factory_castle)
 [![Pub Version](https://img.shields.io/pub/v/factory_castle_flutter?color=%23&label=factory_castle_flutter)](https://pub.dev/packages/factory_castle_flutter)
+![test](https://github.com/nuc134r/factory_castle/workflows/test/badge.svg)
 
 - [IoC and DI](#ioc-and-di)
   - [Setup](#setup)
