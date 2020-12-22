@@ -1,4 +1,4 @@
-name: Dart
+name: Build and test factory_castle package
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Navigate to factory_castle directory
-        run: cd factory_castle
+        run: cd factory_castle/factory_castle
       
       - name: List current directory contents
         run: ls -la
