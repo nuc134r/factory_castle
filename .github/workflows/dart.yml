@@ -22,6 +22,9 @@ jobs:
 
       - name: Navigate to factory_castle directory
         run: cd factory_castle
+      
+      - name: List current directory contents
+        run: ls -la
 
       - name: Print Dart SDK version
         run: dart --version
