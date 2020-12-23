@@ -65,12 +65,20 @@ container.register((c) => MyService(c.res(), c.res()));
 
 Each factory delegate recieves shorthand wrapper for current `FactoryContainer` instance as a parameter so that dependencies can be injected into constructor via `res<>()` method. 
 
-Components are resolved lazily so the order of registration is not important. See the full example:
+Components are resolved lazily which makes the order of registration not important. See the full example:
 
 ```dart
 container.register((c) => MyService(c.res(), c.res()));
 container.register((c) => Logger());
 container.register((c) => Config(String.fromEnvironment('Flavor')));
+```
+
+Registering components under multiple interfaces is not supported yet. The following workaround is suggested:
+
+```dart
+final logger = FileLogger();
+container.register<ILogger>((c) => logger);
+container.register<Logger>((c) => logger);
 ```
 
 ## Lifestyles
@@ -81,5 +89,6 @@ container.register((c) => Config(String.fromEnvironment('Flavor')));
 ## Root widget
 ## View
 ## ViewModel
-## Tips and tricks
+## Service Locator
+## Obtaining TickerProvider
 ## Example
