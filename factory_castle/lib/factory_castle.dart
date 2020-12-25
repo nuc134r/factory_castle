@@ -87,7 +87,7 @@ class FactoryContainerShort {
 
 /// Component lifestyle.
 enum Lifestyle {
-  /// Same instance is returned on every [resolve] call.
+  /// Same instance is returned on every [resolve] call. This is default lifestyle.
   /// Component is instantiated on first resolution.
   Singleton,
 

@@ -13,15 +13,20 @@
   - [Setup](#setup)
   - [Creating container](#creating-container)
   - [Component registration](#component-registration)
+  - [Obtain components](#obtain-components)
   - [Lifestyles](#lifestyles)
+    - [Singleton](#singleton)
+    - [Transient](#transient)
   - [Names](#names)
   - [Component overrides](#component-overrides)
+  - [Container disposal](#container-disposal)
   - [Container hierarchy](#container-hierarchy)
 - [Flutter state management and MVVM](#flutter-state-management-and-mvvm)
   - [Root widget](#root-widget)
   - [View](#view)
   - [ViewModel](#viewmodel)
-  - [Tips and tricks](#tips-and-tricks)
+  - [Service Locator](#service-locator)
+  - [Obtaining TickerProvider](#obtaining-tickerprovider)
   - [Example](#example)
 
 # IoC and DI
@@ -81,9 +86,61 @@ container.register<ILogger>((c) => logger);
 container.register<Logger>((c) => logger);
 ```
 
+## Obtain components
+
+Call `FactoryContainer.resolve<>()` with component type to obtain it from container.
+
+```dart
+final repo = container.resolve<UserRepository>();
+```
+
 ## Lifestyles
+
+Component lifecycle can be specified via optional parameter in `FactoryContainer.register()`:
+
+```dart
+container.register((c) => CacheEntry(c.res(), c.res()), lifestyle: Lifestyle.Transient);
+```
+
+Currently two lifecycle options are available.
+
+### Singleton
+Component's factory delegate is called once on first `resolve<>()`. Same instance is returned on every subsequent call. This is default lifestyle.
+
+### Transient
+
+Component's factory delegate is called on every `resolve<>()` call. There is no way to specify dynamic parameters yet.
+
 ## Names
+
+You can specify component name so that this exact component is resolved when needed.
+
+```dart
+container.register<ILogger>((c) => DbLogger(), name: 'DbLogger');
+container.register<ILogger>((c) => FileLogger(), name: 'FileLogger');
+
+// ...
+
+final fileLog = container.resolve<ILogger>(name: 'FileLogger');
+```
+
 ## Component overrides
+
+By default every unnamed registered component overrides previous. That is not a final design and can be changed in future. For now you can register multiple unnamed components and expect to get last one on `resolve<>()`.
+
+```dart
+container.register<ICacheFactory>((c) => DefaultCacheFactory());
+container.register<ICacheFactory>((c) => MyCacheFactory());
+
+final cacheFactory = container.resolve<ICacheFactory>(); // MyCacheFactory
+```
+
+This behaviour is not consistent when both named and unnamed components are registered.
+
+## Container disposal
+
+Container and component disposal is not yet implemented.
+
 ## Container hierarchy
 # Flutter state management and MVVM
 ## Root widget

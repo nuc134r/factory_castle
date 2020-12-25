@@ -30,6 +30,31 @@ void main() {
       expect(container.resolve<int>(name: 'test1'), 321);
     });
 
+    // TODO This behavour is not consistent yet and no decision is made about how it should work
+    test('resolves last registered component', () {
+      final container1 = FactoryContainer();
+      final container2 = FactoryContainer();
+      final container3 = FactoryContainer();
+      final container4 = FactoryContainer();
+
+      container1.register((c) => 123);
+      container1.register((c) => 321);
+
+      container2.register((c) => 123);
+      container2.register((c) => 321, name: 'test1');
+
+      container3.register((c) => 123, name: 'test1');
+      container3.register((c) => 321);
+
+      container4.register((c) => 123, name: 'test1');
+      container4.register((c) => 321, name: 'test2');
+
+      expect(container1.resolve<int>(), 321);
+      expect(container2.resolve<int>(), 321);
+      expect(container3.resolve<int>(), 321);
+      expect(container4.resolve<int>(), 321);
+    }, skip: 'This behavour is not consistent yet and no decision is made about how it should work');
+
     test('resolves named component if name was not supplied', () {
       final container = FactoryContainer();
 
