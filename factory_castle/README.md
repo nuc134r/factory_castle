@@ -28,6 +28,11 @@
   - [Service Locator](#service-locator)
   - [Obtaining TickerProvider](#obtaining-tickerprovider)
   - [Example](#example)
+  - [Cookbook](#cookbook)
+- [Roadmap](#roadmap)
+  - [Parameterized transient components creation](#parameterized-transient-components-creation)
+  - [Register components under multiple interfaces](#register-components-under-multiple-interfaces)
+  - [Mark component as default upon registration](#mark-component-as-default-upon-registration)
 
 # IoC and DI
 ## Setup
@@ -149,3 +154,29 @@ Container and component disposal is not yet implemented.
 ## Service Locator
 ## Obtaining TickerProvider
 ## Example
+## Cookbook
+# Roadmap
+
+Planned features.
+
+## Parameterized transient components creation
+
+```dart
+container.registerTransient((c, p) => CacheEntry(p['key'], c.res()));
+
+// ...
+
+final entry = container.resolve<CacheEntry>(params: { 'key': key });
+```
+
+## Register components under multiple interfaces
+
+```dart
+container.register<IStorage, FileStorage>((c) => FileStorage(/*...*/));
+```
+
+## Mark component as default upon registration
+
+```dart
+container.register((c) => FileStorage(/*...*/, asDefault: true));
+```

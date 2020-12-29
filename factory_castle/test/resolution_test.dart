@@ -30,7 +30,6 @@ void main() {
       expect(container.resolve<int>(name: 'test1'), 321);
     });
 
-    // TODO This behavour is not consistent yet and no decision is made about how it should work
     test('resolves last registered component', () {
       final container1 = FactoryContainer();
       final container2 = FactoryContainer();

@@ -15,13 +15,11 @@ class FactoryContainer {
 
   /// Register a component of specified type using factory delegate.
   void register<T>(FactoryDelegate<T> factory, {String name = '', Lifestyle lifestyle = Lifestyle.Singleton}) {
-    final component = Component._(factory, T)
-      ..named(name)
-      ..lifestyle(lifestyle);
+    final component = _Handler._(factory, T, name, lifestyle);
     var handler = _handlers[component._type];
 
     if (handler == null) {
-      handler = _ComponentHandler._(component._type, this);
+      handler = _HandlerCollection._(component._type, this);
       _handlers[component._type] = handler;
     }
 
@@ -29,17 +27,26 @@ class FactoryContainer {
   }
 
   /// Resolve a dependency of a runtime obtained type.
-  dynamic resolveOfType(Type type, {String name}) {
+  dynamic resolveOfType(Type type, {String name, bool all = false}) {
+    if (all == true && (name != null && name.isNotEmpty)) {
+      throw UnsupportedError('Cannot request multiple components of type ${type.toString()} by name. Name was "$name".');
+    }
+
     final handler = _handlers[type];
 
     if (handler == null) {
       if (_parent != null) {
-        return _parent.resolveOfType(type, name: name);
+        return _parent.resolveOfType(type, name: name, all: all);
       }
-      throw HandlerNotFoundException('Handler not found for "${type.toString()}"');
+      if (name != null && name.isNotEmpty) {
+        throw HandlerNotFoundException('Handler not found for ${type.toString()} and name "$name"');
+      } else {
+        throw HandlerNotFoundException('Handler not found for ${type.toString()}');
+      }
     }
+
     try {
-      return handler.get(name, _parent);
+      return handler.get(name, _parent, all);
     } catch (e) {
       if (e.toString().contains('Stack Overflow')) {
         if (name != null && name.isNotEmpty) {
@@ -58,6 +65,8 @@ class FactoryContainer {
   /// Resolve component by type and name.
   T resolve<T>({String name = ''}) => resolveOfType(T, name: name);
 
+  List<T> resolveAll<T>() => resolveOfType(T, all: true).cast<T>();
+
   /// Attach a child container to this container.
   void attachChildContainer(FactoryContainer container) {
     if (identical(this, container)) {
@@ -71,7 +80,7 @@ class FactoryContainer {
 
   FactoryContainer _parent;
   FactoryContainerShort _short;
-  HashMap<Type, _ComponentHandler> _handlers = HashMap<Type, _ComponentHandler>();
+  HashMap<Type, _HandlerCollection> _handlers = HashMap<Type, _HandlerCollection>();
 }
 
 /// Shortened syntax version of [FactoryContainer] for convenience use in factory delegates.
@@ -95,51 +104,38 @@ enum Lifestyle {
   Transient,
 }
 
-/// Component holder with fluent API.
-class Component<T> {
-  Component._(this._factory, this._type);
+class _Handler<T> {
+  _Handler._(this._factory, this._type, this._name, this._lifestyle);
 
-  /// Specify a name for this component.
-  Component<T> named(String name) {
-    this._name = name;
-    return this;
-  }
-
-  /// Specify a lifestyle for this component.
-  Component<T> lifestyle(Lifestyle lifestyle) {
-    this._lifestyle = lifestyle;
-    return this;
-  }
-
-  String _name = '';
-  Lifestyle _lifestyle = Lifestyle.Singleton;
   T _instance;
 
+  final String _name;
+  final Lifestyle _lifestyle;
   final Type _type;
   final FactoryDelegate<T> _factory;
 }
 
-class _ComponentHandler<T> {
-  _ComponentHandler._(this.type, this._container);
+class _HandlerCollection<T> {
+  _HandlerCollection._(this.type, this._container);
 
   final Type type;
 
-  void add(Component<T> component) {
+  void add(_Handler<T> component) {
     if (component._name.isEmpty) {
-      _componentsWithoutName.add(component);
+      _unnamedHandlers.add(component);
     } else {
-      if (_componentsWithName.containsKey(component._name)) {
+      if (_namedHandlers.containsKey(component._name)) {
         throw ComponentRegistrationException('Component of type "$type" under name "${component._name}" already registered');
       }
 
-      _componentsWithName.putIfAbsent(component._name, () => component);
+      _namedHandlers.putIfAbsent(component._name, () => component);
     }
   }
 
-  T get(String name, FactoryContainer parent) {
+  dynamic get(String name, FactoryContainer parent, bool all) {
     if (name != null && name.isNotEmpty) {
-      if (_componentsWithName.containsKey(name)) {
-        return _obtainInstance(_componentsWithName[name]);
+      if (_namedHandlers.containsKey(name)) {
+        return _obtainInstance(_namedHandlers[name]);
       } else {
         if (parent != null) {
           return parent.resolveOfType(type, name: name);
@@ -147,10 +143,17 @@ class _ComponentHandler<T> {
         throw ComponentNotFoundException('Could not resolve named component of type "$type" under name $name');
       }
     } else {
-      if (_componentsWithoutName.isNotEmpty) {
-        return _obtainInstance(_componentsWithoutName.last);
-      } else if (_componentsWithName.isNotEmpty) {
-        return _obtainInstance(_componentsWithName.values.last);
+      if (all == true) {
+        return [
+          ..._namedHandlers.entries.map((e) => _obtainInstance(e.value)),
+          ..._unnamedHandlers.map((e) => _obtainInstance(e)),
+        ];
+      }
+
+      if (_unnamedHandlers.isNotEmpty) {
+        return _obtainInstance(_unnamedHandlers.last);
+      } else if (_namedHandlers.isNotEmpty) {
+        return _obtainInstance(_namedHandlers.values.last);
       } else if (parent != null) {
         return parent.resolveOfType(type);
       } else {
@@ -159,7 +162,7 @@ class _ComponentHandler<T> {
     }
   }
 
-  T _obtainInstance(Component<T> component) {
+  T _obtainInstance(_Handler<T> component) {
     if (component._lifestyle == Lifestyle.Singleton) {
       return component._instance ??= component._factory(_container.short);
     }
@@ -169,8 +172,8 @@ class _ComponentHandler<T> {
     throw Exception('Unknown component lifestyle ${component._lifestyle}');
   }
 
-  Map<String, Component<T>> _componentsWithName = Map<String, Component<T>>();
-  List<Component<T>> _componentsWithoutName = List<Component<T>>();
+  Map<String, _Handler<T>> _namedHandlers = Map<String, _Handler<T>>();
+  List<_Handler<T>> _unnamedHandlers = List<_Handler<T>>();
 
   final FactoryContainer _container;
 }
