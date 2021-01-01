@@ -90,6 +90,9 @@ class FactoryContainerShort {
   /// Resolve component by type and name.
   T res<T>({String name = ''}) => container.resolve<T>(name: name);
 
+  /// Resolve all components by type.
+  List<T> all<T>() => container.resolveAll<T>();
+
   /// Wrapped container.
   final FactoryContainer container;
 }
