@@ -1,3 +1,6 @@
+## 2.0.2
+* Added `resolveAll<>()` method to `FactoryContainer`
+
 ## 2.0.1
 * Removed exact version from README not to confuse anyone
  
