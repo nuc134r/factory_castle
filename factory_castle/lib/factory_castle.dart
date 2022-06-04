@@ -27,16 +27,17 @@ class FactoryContainer {
   }
 
   /// Resolve a dependency of a runtime obtained type.
-  dynamic resolveOfType(Type type, {String name, bool all = false}) {
+  dynamic resolveOfType(Type type, {String? name, bool all = false}) {
     if (all == true && (name != null && name.isNotEmpty)) {
-      throw UnsupportedError('Cannot request multiple components of type ${type.toString()} by name. Name was "$name".');
+      throw UnsupportedError(
+          'Cannot request multiple components of type ${type.toString()} by name. Name was "$name".');
     }
 
     final handler = _handlers[type];
 
     if (handler == null) {
       if (_parent != null) {
-        return _parent.resolveOfType(type, name: name, all: all);
+        return _parent!.resolveOfType(type, name: name, all: all);
       }
       if (name != null && name.isNotEmpty) {
         throw HandlerNotFoundException('Handler not found for ${type.toString()} and name "$name"');
@@ -51,10 +52,10 @@ class FactoryContainer {
       if (e.toString().contains('Stack Overflow')) {
         if (name != null && name.isNotEmpty) {
           throw CyclicDependencyException(
-              'Stack Overflow exception occured which may be a sign of cyclic dependency. Exception occured while resolving component of type ${type.toString()} with name "$name"');
+              'Stack Overflow exception occurred which may be a sign of cyclic dependency. Exception occurred while resolving component of type ${type.toString()} with name "$name"');
         } else {
           throw CyclicDependencyException(
-              'Stack Overflow exception occured which may be a sign of cyclic dependency. Exception occured while resolving component of type ${type.toString()}');
+              'Stack Overflow exception occurred which may be a sign of cyclic dependency. Exception occurred while resolving component of type ${type.toString()}');
         }
       } else {
         rethrow;
@@ -78,8 +79,8 @@ class FactoryContainer {
   /// Shortened syntax version of [FactoryContainer] for convenience use in factory delegates.
   FactoryContainerShort get short => _short ??= FactoryContainerShort(this);
 
-  FactoryContainer _parent;
-  FactoryContainerShort _short;
+  FactoryContainer? _parent;
+  FactoryContainerShort? _short;
   HashMap<Type, _HandlerCollection> _handlers = HashMap<Type, _HandlerCollection>();
 }
 
@@ -110,7 +111,7 @@ enum Lifestyle {
 class _Handler<T> {
   _Handler._(this._factory, this._type, this._name, this._lifestyle);
 
-  T _instance;
+  T? _instance;
 
   final String _name;
   final Lifestyle _lifestyle;
@@ -128,17 +129,18 @@ class _HandlerCollection<T> {
       _unnamedHandlers.add(component);
     } else {
       if (_namedHandlers.containsKey(component._name)) {
-        throw ComponentRegistrationException('Component of type "$type" under name "${component._name}" already registered');
+        throw ComponentRegistrationException(
+            'Component of type "$type" under name "${component._name}" already registered');
       }
 
       _namedHandlers.putIfAbsent(component._name, () => component);
     }
   }
 
-  dynamic get(String name, FactoryContainer parent, bool all) {
+  dynamic get(String? name, FactoryContainer? parent, bool all) {
     if (name != null && name.isNotEmpty) {
       if (_namedHandlers.containsKey(name)) {
-        return _obtainInstance(_namedHandlers[name]);
+        return _obtainInstance(_namedHandlers[name]!);
       } else {
         if (parent != null) {
           return parent.resolveOfType(type, name: name);
@@ -176,7 +178,7 @@ class _HandlerCollection<T> {
   }
 
   Map<String, _Handler<T>> _namedHandlers = Map<String, _Handler<T>>();
-  List<_Handler<T>> _unnamedHandlers = List<_Handler<T>>();
+  List<_Handler<T>> _unnamedHandlers = [];
 
   final FactoryContainer _container;
 }

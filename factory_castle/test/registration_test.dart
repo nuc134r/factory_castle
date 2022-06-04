@@ -6,7 +6,7 @@ void main() {
   group('registration', () {
     test('error contains component type and conflicting name', () {
       final container = FactoryContainer();
-      String exceptionText;
+      String exceptionText = '';
 
       container.register((c) => 123, name: 'name1');
 

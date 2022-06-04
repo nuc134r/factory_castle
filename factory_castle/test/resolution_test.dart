@@ -52,7 +52,7 @@ void main() {
       expect(container2.resolve<int>(), 321);
       expect(container3.resolve<int>(), 321);
       expect(container4.resolve<int>(), 321);
-    }, skip: 'This behavour is not consistent yet and no decision is made about how it should work');
+    }, skip: 'This behavior is not consistent yet and no decision is made about how it should work');
 
     test('resolves named component if name was not supplied', () {
       final container = FactoryContainer();
@@ -122,9 +122,9 @@ void main() {
       expect(identical(inst1, inst2) && identical(inst2, inst3), false);
     });
 
-    test('Unexisiting handler message contains type name', () {
+    test('Not existing handler message contains type name', () {
       final container = FactoryContainer();
-      String exceptionText;
+      String exceptionText = '';
 
       container.register<int>((c) => 123);
       try {
@@ -137,9 +137,9 @@ void main() {
       expect(exceptionText, contains('String'));
     });
 
-    test('Unexisiting component message contains type name and requested component name', () {
+    test('Not existing component message contains type name and requested component name', () {
       final container = FactoryContainer();
-      String exceptionText;
+      String exceptionText = '';
 
       container.register<int>((c) => 123);
       try {
@@ -155,7 +155,7 @@ void main() {
 
     test('Throws error on cyclic dependency', () {
       final container = FactoryContainer();
-      String exceptionText;
+      String exceptionText = '';
 
       container.register<String>((c) => 'test1' + c.res<String>(name: 'test2'), name: 'test1');
       container.register<String>((c) => 'test2' + c.res<String>(name: 'test1'), name: 'test2');
