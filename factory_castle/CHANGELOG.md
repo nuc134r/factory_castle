@@ -1,3 +1,6 @@
+## 3.0.0 (04.06.2022)
+* Null safety
+
 ## 2.0.2
 * Added `resolveAll<>()` method to `FactoryContainer`
 
