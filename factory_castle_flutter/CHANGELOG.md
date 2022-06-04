@@ -1,3 +1,6 @@
+## 3.0.0 (04.06.2022)
+* Null safety
+
 ## 2.1.0
 * Added INeedTickerProvider mixin for ViewModelBase
  

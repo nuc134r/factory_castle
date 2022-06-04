@@ -23,9 +23,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  factory_castle: ^2.0.0
+  factory_castle: ^3.0.0
   factory_castle_flutter:
-    path: .\..
+    path: ./..
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 extension BuildContextEx on BuildContext {
   /// Returns closest [FactoryContainer] in the widget tree.
   /// [FactoryContainerWidget] must be somewhere on top of widget hierarchy.
-  FactoryContainer getContainer() => dependOnInheritedWidgetOfExactType<FactoryContainerWidget>().container;
+  FactoryContainer getContainer() => dependOnInheritedWidgetOfExactType<FactoryContainerWidget>()!.container;
 
   /// Calls [FactoryContainer.resolve] method on closest [FactoryContainer] in the widget tree.
   /// [FactoryContainerWidget] must be somewhere on top of widget hierarchy.
@@ -17,9 +17,9 @@ extension BuildContextEx on BuildContext {
 /// This widget makes [FactoryContainer] available for widgets down the widget tree.
 class FactoryContainerWidget extends InheritedWidget {
   FactoryContainerWidget({
-    @required this.container,
-    @required this.child,
-  });
+    required this.container,
+    required this.child,
+  }) : super(child: child);
 
   final FactoryContainer container;
   final Widget child;
@@ -36,9 +36,9 @@ typedef WidgetBuilder<TModel> = Widget Function(BuildContext context, TModel mod
 /// Base widget for creating an MVVM view component.
 class View<TModel extends ChangeNotifier> extends StatelessWidget {
   View({
-    @required this.model,
-    @required this.builder,
-    Key key,
+    required this.model,
+    required this.builder,
+    Key? key,
   }) : super(key: key);
 
   final ViewModelBuilder<TModel> model;
@@ -53,16 +53,17 @@ class View<TModel extends ChangeNotifier> extends StatelessWidget {
 
 class _ViewProxy<TModel extends ChangeNotifier> extends StatefulWidget {
   _ViewProxy({
-    @required this.model,
-    @required this.builder,
-    Key key,
+    required this.model,
+    required this.builder,
+    Key? key,
   }) : super(key: key);
 
   final TModel model;
   final WidgetBuilder<TModel> builder;
 
   @override
-  _ViewState createState() => model is INeedTickerProvider ? _TickerViewState<TModel>(model) : _ViewState<TModel>(model);
+  _ViewState createState() =>
+      model is INeedTickerProvider ? _TickerViewState<TModel>(model) : _ViewState<TModel>(model);
 }
 
 class _ViewState<TModel extends ChangeNotifier> extends State<_ViewProxy<TModel>> {
@@ -72,7 +73,7 @@ class _ViewState<TModel extends ChangeNotifier> extends State<_ViewProxy<TModel>
 
   @override
   void initState() {
-    _model?.addListener(_onModelChanged);
+    _model.addListener(_onModelChanged);
 
     if (_model is ViewModelBase) {
       final model = _model as ViewModelBase;
@@ -84,7 +85,7 @@ class _ViewState<TModel extends ChangeNotifier> extends State<_ViewProxy<TModel>
 
   @override
   void dispose() {
-    _model?.removeListener(_onModelChanged);
+    _model.removeListener(_onModelChanged);
     if (_model is ViewModelBase) {
       final model = _model as ViewModelBase;
       model._disposed = true;
@@ -104,7 +105,10 @@ class _TickerViewState<TModel extends ChangeNotifier> extends _ViewState<TModel>
 
   @override
   void initState() {
-    (widget.model as INeedTickerProvider)?.tickerProvider = this;
+    final model = widget.model;
+    if (model is INeedTickerProvider) {
+      model.tickerProvider = this;
+    }
     super.initState();
   }
 }
@@ -122,7 +126,7 @@ class ViewModelBase extends ChangeNotifier {
   bool get hasError => _hasError;
 
   @protected
-  BuildContext context;
+  late BuildContext context;
 
   /// Set [isBusy] flag to true and [hasError] to false, then trigger view widget rebuild.
   void setBusy() {
@@ -133,7 +137,7 @@ class ViewModelBase extends ChangeNotifier {
   }
 
   /// Set [isBusy] flag to false and [hasError] to the specified value, then trigger view widget rebuild.
-  void setIdle({@required bool hasError}) {
+  void setIdle({required bool hasError}) {
     _hasError = hasError;
     _busy = false;
 
@@ -148,11 +152,11 @@ class ViewModelBase extends ChangeNotifier {
     }
   }
 
-  /// Meant to be overriden to load data on first widget build.
+  /// Meant to be overridden to load data on first widget build.
   /// This is called in [State.initState].
   void onInit() {}
 
-  /// Meant to be overriden to unsubscribe from streams, close handles and free resources.
+  /// Meant to be overridden to unsubscribe from streams, close handles and free resources.
   /// This is called in [State.dispose].
   void onDispose() {}
 }
@@ -160,5 +164,5 @@ class ViewModelBase extends ChangeNotifier {
 /// Mix this mixin into your view model to obtain [TickerProvider].
 mixin INeedTickerProvider on ViewModelBase {
   @protected
-  TickerProvider tickerProvider;
+  late TickerProvider tickerProvider;
 }
