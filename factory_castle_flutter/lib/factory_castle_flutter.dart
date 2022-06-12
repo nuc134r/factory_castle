@@ -62,8 +62,17 @@ class _ViewProxy<TModel extends ChangeNotifier> extends StatefulWidget {
   final WidgetBuilder<TModel> builder;
 
   @override
-  _ViewState createState() =>
-      model is INeedTickerProvider ? _TickerViewState<TModel>(model) : _ViewState<TModel>(model);
+  _ViewState createState() {
+    if (model is INeedSingleTickerProvider) {
+      return _SingleTickerViewState<TModel>(model);
+    }
+
+    if (model is INeedTickerProvider) {
+      return _TickerViewState<TModel>(model);
+    }
+
+    return _ViewState<TModel>(model);
+  }
 }
 
 class _ViewState<TModel extends ChangeNotifier> extends State<_ViewProxy<TModel>> {
@@ -100,7 +109,21 @@ class _ViewState<TModel extends ChangeNotifier> extends State<_ViewProxy<TModel>
   void _onModelChanged() => setState(() {});
 }
 
-class _TickerViewState<TModel extends ChangeNotifier> extends _ViewState<TModel> with SingleTickerProviderStateMixin {
+class _SingleTickerViewState<TModel extends ChangeNotifier> extends _ViewState<TModel>
+    with SingleTickerProviderStateMixin {
+  _SingleTickerViewState(TModel model) : super(model);
+
+  @override
+  void initState() {
+    final model = widget.model;
+    if (model is INeedSingleTickerProvider) {
+      model.tickerProvider = this;
+    }
+    super.initState();
+  }
+}
+
+class _TickerViewState<TModel extends ChangeNotifier> extends _ViewState<TModel> with TickerProviderStateMixin {
   _TickerViewState(TModel model) : super(model);
 
   @override
@@ -162,6 +185,14 @@ class ViewModelBase extends ChangeNotifier {
 }
 
 /// Mix this mixin into your view model to obtain [TickerProvider].
+/// Backed by [SingleTickerProviderStateMixin].
+mixin INeedSingleTickerProvider on ViewModelBase {
+  @protected
+  late TickerProvider tickerProvider;
+}
+
+/// Mix this mixin into your view model to obtain [TickerProvider].
+/// Backed by [TickerProviderStateMixin].
 mixin INeedTickerProvider on ViewModelBase {
   @protected
   late TickerProvider tickerProvider;
