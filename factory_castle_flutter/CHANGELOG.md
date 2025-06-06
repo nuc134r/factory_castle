@@ -1,3 +1,6 @@
+## 3.2.0 (07.06.2025)
+* Added `View.doNotDisposeModel` flag to prevent automatic disposal of the model when the view is disposed. This is useful when view models are reused instead of created on every view appearance.
+
 ## 3.1.0 (13.06.2022)
 * `INeedTickerProvider` mixin now corresponds to `TickerProviderStateMixin` instead of `SingleTickerProviderStateMixin`
 * `INeedSingleTickerProvider` mixin added to allow usage of `SingleTickerProviderStateMixin`

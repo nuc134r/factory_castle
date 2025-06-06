@@ -38,16 +38,22 @@ class View<TModel extends ChangeNotifier> extends StatelessWidget {
   View({
     required this.model,
     required this.builder,
+    this.doNotDisposeModel = false,
     Key? key,
   }) : super(key: key);
 
   final ViewModelBuilder<TModel> model;
   final WidgetBuilder<TModel> builder;
+  final bool doNotDisposeModel;
 
   @override
   Widget build(BuildContext context) {
     final viewModel = model(context.getContainer().short);
-    return _ViewProxy(model: viewModel, builder: builder);
+    return _ViewProxy(
+      model: viewModel,
+      builder: builder,
+      doNotDisposeModel: doNotDisposeModel,
+    );
   }
 }
 
@@ -55,11 +61,13 @@ class _ViewProxy<TModel extends ChangeNotifier> extends StatefulWidget {
   _ViewProxy({
     required this.model,
     required this.builder,
+    required this.doNotDisposeModel,
     Key? key,
   }) : super(key: key);
 
   final TModel model;
   final WidgetBuilder<TModel> builder;
+  final bool doNotDisposeModel;
 
   @override
   _ViewState createState() {
@@ -95,7 +103,7 @@ class _ViewState<TModel extends ChangeNotifier> extends State<_ViewProxy<TModel>
   @override
   void dispose() {
     _model.removeListener(_onModelChanged);
-    if (_model is ViewModelBase) {
+    if (!widget.doNotDisposeModel && _model is ViewModelBase) {
       final model = _model as ViewModelBase;
       model._disposed = true;
       model.onDispose();
@@ -109,8 +117,7 @@ class _ViewState<TModel extends ChangeNotifier> extends State<_ViewProxy<TModel>
   void _onModelChanged() => setState(() {});
 }
 
-class _SingleTickerViewState<TModel extends ChangeNotifier> extends _ViewState<TModel>
-    with SingleTickerProviderStateMixin {
+class _SingleTickerViewState<TModel extends ChangeNotifier> extends _ViewState<TModel> with SingleTickerProviderStateMixin {
   _SingleTickerViewState(TModel model) : super(model);
 
   @override
